@@ -1,8 +1,7 @@
 import re
 from pathlib import Path
 
-from src.events.events import BaseEvent
-from src.events import EventType
+from src.events import BaseEvent, EventType
 
 
 class EventParser:
