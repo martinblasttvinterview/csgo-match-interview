@@ -26,7 +26,7 @@ class Player(BaseSchema):
         )
 
 
-class PlayerPosition(BaseSchema):
+class Position3D(BaseSchema):
     x: int
     y: int
     z: int  # likely not useful
@@ -38,7 +38,7 @@ class PlayerPosition(BaseSchema):
         return cls._pattern
 
     @classmethod
-    def from_match(cls, match: re.Match, start_group: int) -> "PlayerPosition":
+    def from_match(cls, match: re.Match, start_group: int) -> "Position3D":
         return cls(
             x=int(match.group(start_group)),
             y=int(match.group(start_group + 1)),

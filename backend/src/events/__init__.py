@@ -12,15 +12,15 @@ from typing import ClassVar
 from .bases import BaseEvent, BaseSchema
 from .enums import EventType
 from .registry import EventRegistry
-from .schemas import Player, PlayerPosition
+from .schemas import Player, Position3D
 
 
 @EventRegistry.register(EventType.PLAYER_ATTACK_PLAYER)
 class PlayerAttackPlayerEvent(BaseEvent):
     attacker: Player
-    attacker_position: PlayerPosition
+    attacker_position: Position3D
     victim: Player
-    victim_position: PlayerPosition
+    victim_position: Position3D
     weapon: str
     damage: int
     damage_armor: int
@@ -40,7 +40,7 @@ class PlayerAttackPlayerEvent(BaseEvent):
     ).format(
         timestamp=r"(\d{2}/\d{2}/\d{4} - \d{2}:\d{2}:\d{2})",
         player_pattern=Player.get_regex_pattern(),
-        position_pattern=PlayerPosition.get_regex_pattern(),
+        position_pattern=Position3D.get_regex_pattern(),
         weapon=r"(.+?)",
         damage=r"(\d+)",
         damage_armor=r"(\d+)",
@@ -60,9 +60,9 @@ class PlayerAttackPlayerEvent(BaseEvent):
     ) -> "PlayerAttackPlayerEvent":
         timestamp = datetime.strptime(match.group(1), "%m/%d/%Y - %H:%M:%S")
         attacker = Player.from_match(match, start_group=2)
-        attacker_pos = PlayerPosition.from_match(match, start_group=6)
+        attacker_pos = Position3D.from_match(match, start_group=6)
         victim = Player.from_match(match, start_group=9)
-        victim_pos = PlayerPosition.from_match(match, start_group=13)
+        victim_pos = Position3D.from_match(match, start_group=13)
 
         return cls(
             timestamp=timestamp,
@@ -82,9 +82,9 @@ class PlayerAttackPlayerEvent(BaseEvent):
 @EventRegistry.register(EventType.PLAYER_KILLED_PLAYER)
 class PlayerKilledPlayerEvent(BaseEvent):
     attacker: Player
-    attacker_position: PlayerPosition
+    attacker_position: Position3D
     victim: Player
-    victim_position: PlayerPosition
+    victim_position: Position3D
     weapon: str
 
     _pattern: ClassVar[str] = (
@@ -96,9 +96,9 @@ class PlayerKilledPlayerEvent(BaseEvent):
     ).format(
         timestamp=r"(\d{2}/\d{2}/\d{4} - \d{2}:\d{2}:\d{2})",
         attacker=Player.get_regex_pattern(),
-        attacker_pos=PlayerPosition.get_regex_pattern(),
+        attacker_pos=Position3D.get_regex_pattern(),
         victim=Player.get_regex_pattern(),
-        victim_pos=PlayerPosition.get_regex_pattern(),
+        victim_pos=Position3D.get_regex_pattern(),
         weapon=r"(.+?)",
     )
 
@@ -110,9 +110,9 @@ class PlayerKilledPlayerEvent(BaseEvent):
     def from_match(cls, match: re.Match) -> "PlayerKilledPlayerEvent":
         timestamp = datetime.strptime(match.group(1), "%m/%d/%Y - %H:%M:%S")
         attacker = Player.from_match(match, start_group=2)
-        attacker_pos = PlayerPosition.from_match(match, start_group=6)
+        attacker_pos = Position3D.from_match(match, start_group=6)
         victim = Player.from_match(match, start_group=9)
-        victim_pos = PlayerPosition.from_match(match, start_group=13)
+        victim_pos = Position3D.from_match(match, start_group=13)
         weapon = match.group(16)
 
         return cls(

@@ -1,14 +1,17 @@
 from collections import defaultdict
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Annotated
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from src.events.enums import EventType
 from src.events.event_interactor import GetInteractor
 from src.schemas import (
     DataResponse,
+    DatetimeInterval,
     KillsPerPlayerResponse,
+    PlayerHeatmapResponse,
     PlayerKills,
+    PlayerWithPosition,
     RoundAverageLengthResponse,
 )
 
@@ -75,3 +78,29 @@ def get_kills_per_player(
     )
 
     return DataResponse(data=KillsPerPlayerResponse(kills=kills))
+
+
+@router.get("/player-kill-heatmap")
+def get_player_kill_heatmap(
+    interactor: GetInteractor,
+    interval: Annotated[DatetimeInterval, Depends()],
+) -> DataResponse[PlayerHeatmapResponse]:
+    """Return coordinate data of players at the time of death."""
+    player_kill_events = interactor.get_events(
+        event_type=EventType.PLAYER_KILLED_PLAYER,
+        interval=interval,
+    )
+
+    player_with_positions = [
+        PlayerWithPosition(
+            player_name=event.victim.name,
+            x=event.victim_position.x,
+            y=event.victim_position.y,
+            timestamp=event.timestamp,
+        )
+        for event in player_kill_events
+    ]
+
+    return DataResponse(
+        data=PlayerHeatmapResponse(player_with_positions=player_with_positions)
+    )

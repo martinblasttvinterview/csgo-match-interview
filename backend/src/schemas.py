@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import Self
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -18,12 +18,12 @@ class _Base(BaseModel):
 
 
 class DatetimeInterval(_Base):
-    start: datetime
-    end: datetime
+    start: datetime = Field(default=datetime(2021, 11, 28, 20, 41, 9, tzinfo=UTC))
+    end: datetime = Field(default=datetime(2021, 11, 28, 21, 31, 49, tzinfo=UTC))
 
     @model_validator(mode="after")
     def _validate_start_is_after_end(self: Self) -> Self:
-        if not self.start > self.end:
+        if not self.start < self.end:
             msg = "Start date cannot be before end date."
             raise ValueError(msg)
         return self
@@ -64,4 +64,17 @@ class PlayerKills(_Base):
 class KillsPerPlayerResponse(_Base):
     kills: list[PlayerKills] = Field(
         ..., description="List of players and their respective kill counts"
+    )
+
+
+class PlayerWithPosition(_Base):
+    player_name: str = Field(..., description="Name of the player")
+    x: int
+    y: int
+    timestamp: datetime
+
+
+class PlayerHeatmapResponse(_Base):
+    player_with_positions: list[PlayerWithPosition] = Field(
+        ..., description="List of players and their position"
     )

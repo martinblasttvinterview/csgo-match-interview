@@ -10,10 +10,10 @@ class EventParser:
         self,
         event_types: dict[EventType, type[BaseEvent]],
     ):
-        self.event_types = event_types
+        self._event_types = event_types
 
     def parse_line(self, line: str) -> tuple[EventType, BaseEvent] | None:
-        for event_type, event in self.event_types.items():
+        for event_type, event in self._event_types.items():
             pattern = event.get_regex_pattern()
             match = re.fullmatch(pattern, line.strip())
             if match:
@@ -28,7 +28,7 @@ class EventParser:
         end_line: int | None = 9146,
     ) -> dict[EventType, list[BaseEvent]]:
         event_groups: dict[EventType, list[BaseEvent]] = {
-            event_type: [] for event_type in self.event_types
+            event_type: [] for event_type in self._event_types
         }
 
         with file_path.open() as f:
