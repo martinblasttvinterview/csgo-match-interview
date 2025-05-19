@@ -16,6 +16,7 @@ from src.schemas import (
     RoundInterval,
     RoundNumericResponse,
     RoundWithNumeric,
+    StringListResponse,
 )
 
 if TYPE_CHECKING:
@@ -94,19 +95,19 @@ def get_player_kill_heatmap(
         interval=interval,
     )
 
-    player_with_positions = [
-        PlayerWithPosition(
-            player_name=event.victim.name,
-            x=event.victim_position.x,
-            y=event.victim_position.y,
-            weapon=event.weapon,
-            timestamp=event.timestamp,
-        )
-        for event in player_kill_events
-    ]
-
     return DataResponse(
-        data=PlayerHeatmapResponse(player_with_positions=player_with_positions)
+        data=PlayerHeatmapResponse(
+            player_with_positions=[
+                PlayerWithPosition(
+                    player_name=event.victim.name,
+                    x=event.victim_position.x,
+                    y=event.victim_position.y,
+                    weapon=event.weapon,
+                    timestamp=event.timestamp,
+                )
+                for event in player_kill_events
+            ]
+        )
     )
 
 
@@ -125,16 +126,16 @@ def get_money_spent_per_round(
         for round_num, events in round_to_purchase_map.items()
     }
 
-    round_with_numerics = [
-        RoundWithNumeric(
-            round_num=round_num,
-            numeric=numeric,
-        )
-        for round_num, numeric in round_to_total_map.items()
-    ]
-
     return DataResponse(
-        data=RoundNumericResponse(round_with_numeric=round_with_numerics)
+        data=RoundNumericResponse(
+            round_with_numeric=[
+                RoundWithNumeric(
+                    round_num=round_num,
+                    numeric=numeric,
+                )
+                for round_num, numeric in round_to_total_map.items()
+            ]
+        )
     )
 
 
@@ -154,14 +155,35 @@ def get_kills_by_weapon(
         round_num: len(events) for round_num, events in round_to_kills_map.items()
     }
 
-    round_with_numerics = [
-        RoundWithNumeric(
-            round_num=round_num,
-            numeric=numeric,
+    return DataResponse(
+        data=RoundNumericResponse(
+            round_with_numeric=[
+                RoundWithNumeric(
+                    round_num=round_num,
+                    numeric=numeric,
+                )
+                for round_num, numeric in rount_to_kills_map.items()
+            ]
         )
-        for round_num, numeric in rount_to_kills_map.items()
-    ]
+    )
+
+
+@router.get("/weapons")
+def get_all_weapon_names(
+    interactor: GetEventInteractor,
+) -> DataResponse[StringListResponse]:
+    player_kill_events = interactor.get_events(
+        event_type=EventType.PLAYER_KILLED_PLAYER
+    )
+    player_attack_events = interactor.get_events(
+        event_type=EventType.PLAYER_ATTACK_PLAYER
+    )
+    unique_weapon_names: set[str] = {
+        event.weapon for event in player_kill_events + player_attack_events
+    }
 
     return DataResponse(
-        data=RoundNumericResponse(round_with_numeric=round_with_numerics)
+        data=StringListResponse(
+            strings=list(unique_weapon_names),
+        )
     )

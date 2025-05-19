@@ -90,3 +90,7 @@ class RoundNumericResponse(_Base):
     round_with_numeric: list[RoundWithNumeric] = Field(
         ..., description="List of rounds with numeric data for each."
     )
+
+
+class StringListResponse(_Base):
+    strings: list[str]
