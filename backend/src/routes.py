@@ -1,10 +1,16 @@
+from collections import defaultdict
 from typing import TYPE_CHECKING
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 
 from src.events.enums import EventType
 from src.events.event_interactor import GetInteractor
-from src.schemas import DataResponse, RoundAverageLengthResponse
+from src.schemas import (
+    DataResponse,
+    KillsPerPlayerResponse,
+    PlayerKills,
+    RoundAverageLengthResponse,
+)
 
 if TYPE_CHECKING:
     from datetime import timedelta
@@ -23,6 +29,12 @@ def get_average_round_length(
         event_type=EventType.ROUND_END,
     )
 
+    if len(round_start_events) != len(round_end_events):
+        raise HTTPException(
+            status_code=500,
+            detail="Internal Server Error.",
+        )
+
     dt_list: list[timedelta] = [
         end.timestamp - start.timestamp
         for start, end in zip(
@@ -39,3 +51,27 @@ def get_average_round_length(
             )
         )
     )
+
+
+@router.get("/num-kills-players")
+def get_kills_per_player(
+    interactor: GetInteractor,
+) -> DataResponse[KillsPerPlayerResponse]:
+    player_kill_events = interactor.get_events(
+        event_type=EventType.PLAYER_KILLED_PLAYER,
+    )
+    kills_count_map = defaultdict(int)
+
+    for event in player_kill_events:
+        kills_count_map[event.attacker.name] += 1
+
+    kills = sorted(
+        (
+            PlayerKills(player_name=name, kills=count)
+            for name, count in kills_count_map.items()
+        ),
+        key=lambda pk: pk.kills,
+        reverse=True,
+    )
+
+    return DataResponse(data=KillsPerPlayerResponse(kills=kills))

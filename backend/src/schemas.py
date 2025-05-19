@@ -54,3 +54,14 @@ class RoundAverageLengthResponse(_Base):
     average_seconds: int = Field(
         ..., description="Average length of the rounds in seconds"
     )
+
+
+class PlayerKills(_Base):
+    player_name: str = Field(..., description="Name of the player")
+    kills: int = Field(..., description="Total kills made by the player")
+
+
+class KillsPerPlayerResponse(_Base):
+    kills: list[PlayerKills] = Field(
+        ..., description="List of players and their respective kill counts"
+    )
