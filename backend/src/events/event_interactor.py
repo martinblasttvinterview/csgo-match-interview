@@ -63,7 +63,7 @@ class EventInteractor:
 def get_event_interactor() -> EventInteractor:
     return EventInteractor(
         event_parser=get_event_parser(),
-        logs_path=Path(__file__).parent.parent / "match-data.txt",
+        logs_path=Path(__file__).parent.parent.parent / "match-data.txt",
     )
 
 

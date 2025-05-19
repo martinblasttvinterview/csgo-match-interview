@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Self
 
-from pydantic import BaseModel, ConfigDict, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 ################
 # Base Schemas #
@@ -48,3 +48,9 @@ class RoundInterval(_Base):
 
 class DataResponse[T: BaseModel](_Base):
     data: T
+
+
+class RoundAverageLengthResponse(_Base):
+    average_seconds: int = Field(
+        ..., description="Average length of the rounds in seconds"
+    )

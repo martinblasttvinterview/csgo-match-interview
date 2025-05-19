@@ -77,3 +77,35 @@ class PlayerAttackPlayerEvent(BaseEvent):
             armor=int(match.group(20)),
             hitgroup=match.group(21),
         )
+
+
+@EventRegistry.register(EventType.ROUND_START)
+class RoundStartEvent(BaseEvent):
+    _pattern: ClassVar[str] = (r'^{timestamp}: World triggered "Round_Start"$').format(
+        timestamp=r"(?P<timestamp>\d{2}/\d{2}/\d{4} - \d{2}:\d{2}:\d{2})"
+    )
+
+    @classmethod
+    def get_regex_pattern(cls) -> str:
+        return cls._pattern
+
+    @classmethod
+    def from_match(cls, match: re.Match) -> "RoundStartEvent":
+        timestamp = datetime.strptime(match.group("timestamp"), "%m/%d/%Y - %H:%M:%S")
+        return cls(timestamp=timestamp)
+
+
+@EventRegistry.register(EventType.ROUND_END)
+class RoundEndEvent(BaseEvent):
+    _pattern: ClassVar[str] = (r'^{timestamp}: World triggered "Round_End"$').format(
+        timestamp=r"(?P<timestamp>\d{2}/\d{2}/\d{4} - \d{2}:\d{2}:\d{2})"
+    )
+
+    @classmethod
+    def get_regex_pattern(cls) -> str:
+        return cls._pattern
+
+    @classmethod
+    def from_match(cls, match: re.Match) -> "RoundEndEvent":
+        timestamp = datetime.strptime(match.group("timestamp"), "%m/%d/%Y - %H:%M:%S")
+        return cls(timestamp=timestamp)

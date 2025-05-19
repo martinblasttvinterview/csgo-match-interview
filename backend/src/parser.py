@@ -23,17 +23,21 @@ class EventParser:
     def parse_file(
         self,
         file_path: Path,
-        skip_lines: int = 1863,  # lines before this are pretty much irrelevant
+        # logs outside of this range are pretty much useless
+        start_line: int = 1863,
+        end_line: int | None = 9146,
     ) -> dict[EventType, list[BaseEvent]]:
         event_groups: dict[EventType, list[BaseEvent]] = {
             event_type: [] for event_type in self.event_types
         }
 
         with file_path.open() as f:
-            for _ in range(skip_lines):
-                next(f, None)
+            for current_line_number, line in enumerate(f):
+                if current_line_number < start_line:
+                    continue
+                if end_line is not None and current_line_number >= end_line:
+                    break
 
-            for line in f:
                 parsed = self.parse_line(line)
                 if parsed:
                     event_name, event = parsed
