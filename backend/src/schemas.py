@@ -71,6 +71,7 @@ class PlayerWithPosition(_Base):
     player_name: str = Field(..., description="Name of the player")
     x: int
     y: int
+    weapon: str
     timestamp: datetime
 
 

@@ -96,6 +96,7 @@ def get_player_kill_heatmap(
             player_name=event.victim.name,
             x=event.victim_position.x,
             y=event.victim_position.y,
+            weapon=event.weapon,
             timestamp=event.timestamp,
         )
         for event in player_kill_events
