@@ -15,3 +15,19 @@ services:
         - action: sync
           path: ./backend
           target: /app/backend
+  
+  frontend:
+    image: frontend:latest
+    container_name: frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    build:
+        context: ./frontend
+
+    develop:
+      watch:
+        - action: sync
+          path: ./frontend
+          target: /app/frontend
+    

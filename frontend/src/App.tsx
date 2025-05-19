@@ -1,12 +1,13 @@
-import './App.css'
+import React from 'react';
+import ChartsGrid from './components/ChartsGrid';
 
-function App() {
-
+const App: React.FC = () => {
   return (
-    <>
-      Hello, World!
-    </>
-  )
-}
+    <div className="App">
+      <h1>Game Statistics Dashboard</h1>
+      <ChartsGrid />
+    </div>
+  );
+};
 
-export default App
+export default App;

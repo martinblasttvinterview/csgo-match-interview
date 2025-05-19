@@ -8,3 +8,7 @@ help:  ## Show this help.
 .PHONY: up
 up:  ## Start with docker compose
 	docker compose up --build --watch
+
+.PHONE: down
+down:  ## Kill docker containers
+	docker compose down
