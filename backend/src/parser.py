@@ -2,6 +2,7 @@ import re
 from pathlib import Path
 
 from src.events import BaseEvent, EventType
+from src.events.registry import EventRegistry
 
 
 class EventParser:
@@ -39,3 +40,7 @@ class EventParser:
                     event_groups[event_name].append(event)
 
         return {k: v for k, v in event_groups.items() if v}
+
+
+def get_event_parser() -> EventParser:
+    return EventParser(event_types=EventRegistry.get_events())
