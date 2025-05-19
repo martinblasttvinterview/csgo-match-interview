@@ -9,19 +9,16 @@ from src.main import get_app
 
 @pytest.fixture(scope="session")
 def anyio_backend() -> str:
-    """Set the backend for the anyio plugin."""
     return "asyncio"
 
 
 @pytest.fixture
 def app() -> FastAPI:
-    """Provide the FastAPI app instance (session-wide)."""
     return get_app()
 
 
 @pytest.fixture
 async def client(app: FastAPI) -> AsyncGenerator[AsyncClient, None]:
-    """Provide a test client for the FastAPI app."""
     async with AsyncClient(
         transport=ASGITransport(app=app), base_url="http://test/api"
     ) as ac:

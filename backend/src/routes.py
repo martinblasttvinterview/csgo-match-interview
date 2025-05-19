@@ -136,3 +136,32 @@ def get_money_spent_per_round(
     return DataResponse(
         data=RoundNumericResponse(round_with_numeric=round_with_numerics)
     )
+
+
+@router.get("/kills-by-weapon/{weapon}")
+def get_kills_by_weapon(
+    weapon: str,
+    interactor: GetEventInteractor,
+    interval: Annotated[RoundInterval, Depends()],
+) -> DataResponse[RoundNumericResponse]:
+    round_to_kills_map = interactor.get_events_per_rounds(
+        event_type=EventType.PLAYER_KILLED_PLAYER,
+        interval=interval,
+        filter_params={"weapon": weapon},
+    )
+
+    rount_to_kills_map = {
+        round_num: len(events) for round_num, events in round_to_kills_map.items()
+    }
+
+    round_with_numerics = [
+        RoundWithNumeric(
+            round_num=round_num,
+            numeric=numeric,
+        )
+        for round_num, numeric in rount_to_kills_map.items()
+    ]
+
+    return DataResponse(
+        data=RoundNumericResponse(round_with_numeric=round_with_numerics)
+    )

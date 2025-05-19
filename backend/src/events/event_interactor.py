@@ -61,6 +61,8 @@ class EventInteractor:
         if event_type not in self._parsed_events:
             return []
 
+        print(event_type)
+
         events = self._parsed_events.get(event_type, [])
 
         if interval is not None:
@@ -77,6 +79,10 @@ class EventInteractor:
         interval: RoundInterval | None = None,
         filter_params: dict[str, Any] | None = None,
     ) -> dict[int, list[BaseEvent]]:
+        """
+        Returns a mapping of round number to all events, of the specified event type,
+        that happened for each round.
+        """
         # Get all MATCH_STATUS_SCORE events, and skip every second one.
         # Skip, because each of those events has 2 entries per round.
         round_end_events = self.get_events(event_type=EventType.MATCH_STATUS_SCORE)

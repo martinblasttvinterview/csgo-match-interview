@@ -30,7 +30,7 @@ class DatetimeInterval(_Base):
 
 
 class RoundInterval(_Base):
-    start: int = Field(default=0)
+    start: int = Field(default=1)
     end: int = Field(default=22)
 
     @model_validator(mode="after")
