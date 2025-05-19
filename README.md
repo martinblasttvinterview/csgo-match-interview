@@ -1,32 +1,45 @@
 # CS:GO Match Visualizer
 
-## Technologies
+A system for parsing and visualizing CS:GO tournament match statistics through:
+1. Backend API for match logs parsing
+2. Interactive dashboard for data visualization
 
-* **Python 3.12**
-* **FastAPI**
-* **React**
-* **Docker**
+## Quick Start
+### Requirements: 
+- Docker and Docker Compose
 
-## Overview
+Run the project:
 
-This project aims to parse, and expose match statistics from a CS:GO tournament match.
-These statistics will then be Visualized in a frontend.
+```bash
+make up
+```
+*This will run both the Backend and the Frontend as Docker containers, using Docker Compose.*
 
-### Scope
+## Slow Start
+If you do not wish to run the project using Docker, you can instead manually start each service.
 
-In order to keep the project simple and within scope, I won’t implement a database. Instead, all events will be loaded directly into memory when the match data is processed. I will also focus on the quality of the code, rather than exposing too many statistics.
+### Requirements:
+- Python 3.12
+- UV (Python Package Manager)
+- npm 
 
-## Backend Design
+### Backend
+```bash
+cd backend
+make up
+```
 
-### Focused Stats
+Running tests:
 
-To begin with, I will add: **round average length** and **number of kills per player**. After that it would be interesting to display position data of killed players in a heatmap (over time?), and money spent per round. 
+```bash
+cd backend
+make test
+``` 
 
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+``` 
 
-### Event Parsing
-
-The CS:GO match log emits many different events, but to keep the scope limited, I will implement only the essential events required for the statistics mentioned above. The backend will need to handle multiple event types and extract relevant data from them.
-
-### Design Principles
-
-I will follow SOLID principles, especially for the event registration system. When adding support for a new event, it should be as easy as creating a new class that implements a base event interface. This class will then be registered with an event registry, which will later be used during the parsing process.
