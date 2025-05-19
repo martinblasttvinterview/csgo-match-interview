@@ -1,4 +1,3 @@
-// src/components/charts/KillHeatmapChart.tsx
 import React, { useState, useEffect } from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { PlayerWithPosition } from '../types/chartTypes';

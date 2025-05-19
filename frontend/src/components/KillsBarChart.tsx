@@ -1,4 +1,3 @@
-// src/components/charts/KillsBarChart.tsx
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 import { PlayerKills } from '../types/chartTypes';

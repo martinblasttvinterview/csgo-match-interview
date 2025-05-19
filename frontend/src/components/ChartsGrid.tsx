@@ -59,7 +59,7 @@ const ChartsGrid: React.FC = () => {
           display: grid;
           grid-template-columns: 1fr 1fr;
           grid-gap: 20px;
-          padding: 20px;
+          padding: 50px;
         }
       `}</style>
             <ChartContainer title="Money Spent per Round">
