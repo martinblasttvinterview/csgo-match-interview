@@ -1,0 +1,17 @@
+services:
+  backend:
+    image: backend:latest
+    container_name: backend
+    restart: always
+    ports:
+      - "8000:8000"
+    build:
+        context: ./backend
+    environment:
+      HOST: "0.0.0.0"
+
+    develop:
+      watch:
+        - action: sync
+          path: ./backend
+          target: /app/backend
