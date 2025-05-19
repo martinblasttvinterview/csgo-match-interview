@@ -42,4 +42,6 @@ cd frontend
 npm install
 npm run dev
 ``` 
-
+### URLs
+Backend URL: `http://localhost:8000/docs` (Open API)
+Frontend URL: `http://localhost:5173`
