@@ -18,6 +18,7 @@ To make the project completeable within a reasonable timeframe, the following wi
 2. Minimal Frontend Styling
 3. Not 100% Test Coverage
 4. As few supported events as possible
+5. No caching (most requests could be)
 
 ## Backend Design
 

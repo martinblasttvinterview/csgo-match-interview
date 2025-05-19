@@ -172,6 +172,7 @@ def get_kills_by_weapon(
 def get_all_weapon_names(
     interactor: GetEventInteractor,
 ) -> DataResponse[StringListResponse]:
+    # TODO: Make it possible to fetch by multiple types
     player_kill_events = interactor.get_events(
         event_type=EventType.PLAYER_KILLED_PLAYER
     )

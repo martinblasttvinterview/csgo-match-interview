@@ -76,7 +76,6 @@ const WeaponKillsBarChart: React.FC = () => {
 
     if (loading && allRoundKills.length === 0) return <div>Loading weapon data...</div>;
 
-    // Calculate the maximum kill count for the Y-axis domain
     const maxKills = Math.max(...filteredKills.map(item => item.kills), 0);
     const yAxisDomain = [0, Math.ceil(maxKills)];
 
@@ -133,8 +132,8 @@ const WeaponKillsBarChart: React.FC = () => {
                     />
                     <YAxis
                         domain={yAxisDomain}
-                        tickCount={maxKills + 1} // Ensures only whole numbers
-                        allowDecimals={false} // No decimal values
+                        tickCount={maxKills + 1}
+                        allowDecimals={false}
                         label={{ value: 'Kills', angle: -90, position: 'insideLeft' }}
                     />
                     <Tooltip

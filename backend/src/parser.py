@@ -13,7 +13,7 @@ class EventParser:
     ):
         self._event_types = event_types
 
-    def parse_line(self, line: str) -> tuple[EventType, BaseEvent] | None:
+    def _parse_line(self, line: str) -> tuple[EventType, BaseEvent] | None:
         for event_type, event in self._event_types.items():
             pattern = event.get_regex_pattern()
             match = re.fullmatch(pattern, line.strip())
@@ -34,13 +34,14 @@ class EventParser:
 
         with file_path.open() as f:
             for current_line_number, line in enumerate(f):
+                # TODO: Make prettier
                 if settings.env != "test":
                     if current_line_number < start_line:
                         continue
                     if end_line is not None and current_line_number >= end_line:
                         break
 
-                parsed = self.parse_line(line)
+                parsed = self._parse_line(line)
                 if parsed:
                     event_name, event = parsed
                     event_groups[event_name].append(event)
