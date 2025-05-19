@@ -3,6 +3,7 @@ from pathlib import Path
 
 from src.events import BaseEvent, EventType
 from src.events.registry import EventRegistry
+from src.settings import settings
 
 
 class EventParser:
@@ -33,10 +34,11 @@ class EventParser:
 
         with file_path.open() as f:
             for current_line_number, line in enumerate(f):
-                if current_line_number < start_line:
-                    continue
-                if end_line is not None and current_line_number >= end_line:
-                    break
+                if settings.env != "test":
+                    if current_line_number < start_line:
+                        continue
+                    if end_line is not None and current_line_number >= end_line:
+                        break
 
                 parsed = self.parse_line(line)
                 if parsed:

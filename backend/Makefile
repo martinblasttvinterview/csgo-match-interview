@@ -10,15 +10,15 @@ run: # Run the application.
 
 .PHONY: test
 test: # Run all tests in the codebase.
-	pytest ./tests -v -s
+	uv run pytest ./tests -v -s
 
 .PHONY: test-filter
 test-filter: # Run tests with a specific filter.
-	pytest ./tests -v -s -k $(filter)
+	uv run pytest ./tests -v -s -k $(filter)
 
 .PHONY: test-coverage
 test-coverage: # Run tests with coverage.
-	pytest --cov=src tests/
+	uv run pytest --cov=src tests/
 
 .PHONY: lint
 lint: # Run linters on the codebase.

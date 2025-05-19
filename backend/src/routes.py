@@ -25,7 +25,7 @@ router = APIRouter(prefix="/stats")
 
 
 @router.get("/avg-round-time")
-def get_average_round_length(
+def get_average_round_time(
     interactor: GetEventInteractor,
 ) -> DataResponse[RoundAverageLengthResponse]:
     round_start_events = interactor.get_events(
