@@ -5519,7 +5519,7 @@
 11/28/2021 - 21:02:38: "Perfecto<9><STEAM_1:0:80477379><TERRORIST>" money change 550-200 = $350 (tracked) (purchase: weapon_flashbang)
 11/28/2021 - 21:02:38: "Perfecto<28><STEAM_1:0:80477379><TERRORIST>" picked up "flashbang"
 11/28/2021 - 21:02:38: "Perfecto<28><STEAM_1:0:80477379><TERRORIST>" purchased "flashbang"
-    11/28/2021 - 21:02:39: World triggered "Round_Start"
+11/28/2021 - 21:02:39: World triggered "Round_Start"
 11/28/2021 - 21:02:39: "shox <14><STEAM_1:1:23327283><CT>" money change 4550-2900 = $1650 (tracked) (purchase: weapon_m4a1_silencer)
 11/28/2021 - 21:02:39: "shox <33><STEAM_1:1:23327283><CT>" picked up "m4a1"
 11/28/2021 - 21:02:39: "shox <33><STEAM_1:1:23327283><CT>" purchased "m4a1_silencer"
