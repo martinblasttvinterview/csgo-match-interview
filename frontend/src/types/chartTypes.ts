@@ -16,6 +16,10 @@ export interface RoundWithNumeric {
     numeric: number;
 }
 
+export interface DataResponse<T> {
+    data: T;
+}
+
 export interface KillsPerPlayerResponse {
     kills: PlayerKills[];
 }
@@ -30,4 +34,8 @@ export interface RoundNumericResponse {
 
 export interface RoundAverageLengthResponse {
     average_seconds: number;
+}
+
+export interface StringListResponse {
+    strings: string[];
 }

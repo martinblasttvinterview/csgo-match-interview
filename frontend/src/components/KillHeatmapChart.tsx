@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { PlayerWithPosition } from '../types/chartTypes';
+import type { PlayerWithPosition } from '../types/chartTypes';
 import { Box, Slider, Typography } from '@mui/material';
 import { DateTime } from 'luxon';
 

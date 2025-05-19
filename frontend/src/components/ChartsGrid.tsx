@@ -1,3 +1,4 @@
+// src/components/ChartsGrid.tsx
 import React, { useEffect, useState } from 'react';
 import {
     fetchAverageRoundTime,
@@ -5,7 +6,7 @@ import {
     fetchPlayerKillHeatmap,
     fetchMoneySpentPerRound,
 } from '../api/statsApi';
-import {
+import type {
     PlayerKills,
     PlayerWithPosition,
     RoundWithNumeric,
@@ -14,6 +15,7 @@ import KillsBarChart from './KillsBarChart';
 import MoneyLineChart from './MoneyLineChart';
 import KillHeatmapChart from './KillHeatmapChart';
 import RoundTimeDisplay from './RoundTimeDisplay';
+import WeaponKillsBarChart from './WeaponKillsBarChart';
 import ChartContainer from './ChartContainer';
 
 const ChartsGrid: React.FC = () => {
@@ -55,22 +57,30 @@ const ChartsGrid: React.FC = () => {
     return (
         <div className="charts-grid">
             <style jsx>{`
-        .charts-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          grid-gap: 20px;
-          padding: 50px;
-        }
-      `}</style>
+                .charts-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    grid-gap: 20px;
+                    padding: 50px;
+                }
+            `}</style>
+
             <ChartContainer title="Money Spent per Round">
                 <MoneyLineChart data={moneyData} />
             </ChartContainer>
+
             <ChartContainer title="Kills per Player">
                 <KillsBarChart data={killsData} />
             </ChartContainer>
+
+            <ChartContainer title="Weapon Kill Analysis">
+                <WeaponKillsBarChart />
+            </ChartContainer>
+
             <ChartContainer title="Player Death Heatmap">
                 <KillHeatmapChart data={heatmapData} />
             </ChartContainer>
+
             <ChartContainer title="Average Round Time">
                 <RoundTimeDisplay averageSeconds={avgRoundTime} />
             </ChartContainer>

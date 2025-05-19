@@ -61,8 +61,6 @@ class EventInteractor:
         if event_type not in self._parsed_events:
             return []
 
-        print(event_type)
-
         events = self._parsed_events.get(event_type, [])
 
         if interval is not None:

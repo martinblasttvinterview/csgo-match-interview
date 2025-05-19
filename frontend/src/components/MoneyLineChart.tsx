@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { RoundWithNumeric } from '../types/chartTypes';
+import type { RoundWithNumeric } from '../types/chartTypes';
 import { Box, Slider, Typography } from '@mui/material';
 
 interface MoneyLineChartProps {
