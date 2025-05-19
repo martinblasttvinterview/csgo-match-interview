@@ -6,7 +6,7 @@ __all__ = [
 ]
 
 import re
-from datetime import datetime
+from datetime import UTC, datetime
 from typing import ClassVar
 
 from .bases import BaseEvent, BaseSchema
@@ -58,7 +58,9 @@ class PlayerAttackPlayerEvent(BaseEvent):
         cls,
         match: re.Match,
     ) -> "PlayerAttackPlayerEvent":
-        timestamp = datetime.strptime(match.group(1), "%m/%d/%Y - %H:%M:%S")
+        timestamp = datetime.strptime(match.group(1), "%m/%d/%Y - %H:%M:%S").replace(
+            tzinfo=UTC
+        )
         attacker = Player.from_match(match, start_group=2)
         attacker_pos = Position3D.from_match(match, start_group=6)
         victim = Player.from_match(match, start_group=9)
@@ -108,7 +110,9 @@ class PlayerKilledPlayerEvent(BaseEvent):
 
     @classmethod
     def from_match(cls, match: re.Match) -> "PlayerKilledPlayerEvent":
-        timestamp = datetime.strptime(match.group(1), "%m/%d/%Y - %H:%M:%S")
+        timestamp = datetime.strptime(match.group(1), "%m/%d/%Y - %H:%M:%S").replace(
+            tzinfo=UTC
+        )
         attacker = Player.from_match(match, start_group=2)
         attacker_pos = Position3D.from_match(match, start_group=6)
         victim = Player.from_match(match, start_group=9)
@@ -153,7 +157,9 @@ class PlayerPurchaseEvent(BaseEvent):
 
     @classmethod
     def from_match(cls, match: re.Match) -> "PlayerPurchaseEvent":
-        timestamp = datetime.strptime(match.group(1), "%m/%d/%Y - %H:%M:%S")
+        timestamp = datetime.strptime(match.group(1), "%m/%d/%Y - %H:%M:%S").replace(
+            tzinfo=UTC
+        )
         player = Player.from_match(match, start_group=2)
 
         return cls(
@@ -178,7 +184,9 @@ class RoundStartEvent(BaseEvent):
 
     @classmethod
     def from_match(cls, match: re.Match) -> "RoundStartEvent":
-        timestamp = datetime.strptime(match.group("timestamp"), "%m/%d/%Y - %H:%M:%S")
+        timestamp = datetime.strptime(
+            match.group("timestamp"), "%m/%d/%Y - %H:%M:%S"
+        ).replace(tzinfo=UTC)
         return cls(timestamp=timestamp)
 
 
@@ -194,5 +202,7 @@ class RoundEndEvent(BaseEvent):
 
     @classmethod
     def from_match(cls, match: re.Match) -> "RoundEndEvent":
-        timestamp = datetime.strptime(match.group("timestamp"), "%m/%d/%Y - %H:%M:%S")
+        timestamp = datetime.strptime(
+            match.group("timestamp"), "%m/%d/%Y - %H:%M:%S"
+        ).replace(tzinfo=UTC)
         return cls(timestamp=timestamp)
