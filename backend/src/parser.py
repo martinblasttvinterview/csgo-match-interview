@@ -25,7 +25,7 @@ class EventParser:
         self,
         file_path: Path,
         # logs outside of this range are pretty much useless
-        start_line: int = 1863,
+        start_line: int = 1818,
         end_line: int | None = 9146,
     ) -> dict[EventType, list[BaseEvent]]:
         event_groups: dict[EventType, list[BaseEvent]] = {

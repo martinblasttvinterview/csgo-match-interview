@@ -7,3 +7,4 @@ class EventType(StrEnum):
     PLAYER_PURCHASE = auto()
     ROUND_START = auto()
     ROUND_END = auto()
+    MATCH_STATUS_SCORE = auto()

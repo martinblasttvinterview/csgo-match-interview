@@ -206,3 +206,38 @@ class RoundEndEvent(BaseEvent):
             match.group("timestamp"), "%m/%d/%Y - %H:%M:%S"
         ).replace(tzinfo=UTC)
         return cls(timestamp=timestamp)
+
+
+@EventRegistry.register(EventType.MATCH_STATUS_SCORE)
+class MatchStatusScoreEvent(BaseEvent):
+    score_team1: int
+    score_team2: int
+    map_name: str
+    rounds_played: int
+
+    _pattern: ClassVar[str] = (
+        r'^{timestamp}: MatchStatus: Score: {score_team1}:{score_team2} on map "{map_name}" RoundsPlayed: {rounds_played}$'
+    ).format(
+        timestamp=r"(\d{2}/\d{2}/\d{4} - \d{2}:\d{2}:\d{2})",
+        score_team1=r"(\d+)",
+        score_team2=r"(\d+)",
+        map_name=r"(.+?)",
+        rounds_played=r"(\d+)",
+    )
+
+    @classmethod
+    def get_regex_pattern(cls) -> str:
+        return cls._pattern
+
+    @classmethod
+    def from_match(cls, match: re.Match) -> "MatchStatusScoreEvent":
+        timestamp = datetime.strptime(match.group(1), "%m/%d/%Y - %H:%M:%S").replace(
+            tzinfo=UTC
+        )
+        return cls(
+            timestamp=timestamp,
+            score_team1=int(match.group(2)),
+            score_team2=int(match.group(3)),
+            map_name=match.group(4),
+            rounds_played=int(match.group(5)),
+        )

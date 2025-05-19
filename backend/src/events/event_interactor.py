@@ -77,7 +77,10 @@ class EventInteractor:
         interval: RoundInterval | None = None,
         filter_params: dict[str, Any] | None = None,
     ) -> dict[int, list[BaseEvent]]:
-        round_end_events = self.get_events(event_type=EventType.ROUND_END)
+        # Get all MATCH_STATUS_SCORE events, and skip every second one.
+        # Skip, because each of those events has 2 entries per round.
+        round_end_events = self.get_events(event_type=EventType.MATCH_STATUS_SCORE)
+        round_end_events = round_end_events[::2]
 
         if not round_end_events:
             return {}
@@ -87,9 +90,9 @@ class EventInteractor:
             for events in self._parsed_events.values()
             for event in events
         )
+        round_end_events = round_end_events[1:]
 
         datetime_intervals: list[DatetimeInterval] = []
-
         datetime_intervals.append(
             DatetimeInterval(start=first_timestamp, end=round_end_events[0].timestamp)
         )

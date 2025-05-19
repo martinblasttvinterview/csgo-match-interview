@@ -119,6 +119,7 @@ def get_money_spent_per_round(
         event_type=EventType.PLAYER_PURCHASE,
         interval=interval,
     )
+
     round_to_total_map = {
         round_num: sum(event.money_spent for event in events)
         for round_num, events in round_to_purchase_map.items()
