@@ -23,19 +23,19 @@ class DatetimeInterval(_Base):
 
     @model_validator(mode="after")
     def _validate_start_is_after_end(self: Self) -> Self:
-        if not self.start < self.end:
+        if not self.start <= self.end:
             msg = "Start date cannot be before end date."
             raise ValueError(msg)
         return self
 
 
 class RoundInterval(_Base):
-    start: int
-    end: int
+    start: int = Field(default=0)
+    end: int = Field(default=22)
 
     @model_validator(mode="after")
     def _validate_start_is_after_end(self: Self) -> Self:
-        if not self.start > self.end:
+        if not self.start <= self.end:
             msg = "Start round cannot be before end round."
             raise ValueError(msg)
         return self
@@ -78,4 +78,15 @@ class PlayerWithPosition(_Base):
 class PlayerHeatmapResponse(_Base):
     player_with_positions: list[PlayerWithPosition] = Field(
         ..., description="List of players and their position"
+    )
+
+
+class RoundWithNumeric(_Base):
+    round_num: int
+    numeric: int | float
+
+
+class RoundNumericResponse(_Base):
+    round_with_numeric: list[RoundWithNumeric] = Field(
+        ..., description="List of rounds with numeric data for each."
     )

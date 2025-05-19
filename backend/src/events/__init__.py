@@ -125,6 +125,47 @@ class PlayerKilledPlayerEvent(BaseEvent):
         )
 
 
+@EventRegistry.register(EventType.PLAYER_PURCHASE)
+class PlayerPurchaseEvent(BaseEvent):
+    player: Player
+    item: str
+    money_before: int
+    money_after: int
+    money_spent: int
+
+    _pattern: ClassVar[str] = (
+        r"^{timestamp}: "
+        r"{player_pattern} "
+        r"money change {money_before}-{money_spent} = \${money_after} "
+        r"\(tracked\) \(purchase: {item}\)$"
+    ).format(
+        timestamp=r"(\d{2}/\d{2}/\d{4} - \d{2}:\d{2}:\d{2})",
+        player_pattern=Player.get_regex_pattern(),
+        money_before=r"(\d+)",
+        money_spent=r"(\d+)",
+        money_after=r"(\d+)",
+        item=r"(.+?)",
+    )
+
+    @classmethod
+    def get_regex_pattern(cls) -> str:
+        return cls._pattern
+
+    @classmethod
+    def from_match(cls, match: re.Match) -> "PlayerPurchaseEvent":
+        timestamp = datetime.strptime(match.group(1), "%m/%d/%Y - %H:%M:%S")
+        player = Player.from_match(match, start_group=2)
+
+        return cls(
+            timestamp=timestamp,
+            player=player,
+            money_before=int(match.group(6)),
+            money_spent=int(match.group(7)),
+            money_after=int(match.group(8)),
+            item=match.group(9),
+        )
+
+
 @EventRegistry.register(EventType.ROUND_START)
 class RoundStartEvent(BaseEvent):
     _pattern: ClassVar[str] = (r'^{timestamp}: World triggered "Round_Start"$').format(

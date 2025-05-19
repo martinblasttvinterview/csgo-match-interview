@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING, Annotated
 from fastapi import APIRouter, Depends, HTTPException
 
 from src.events.enums import EventType
-from src.events.event_interactor import GetInteractor
+from src.events.event_interactor import GetEventInteractor
 from src.schemas import (
     DataResponse,
     DatetimeInterval,
@@ -13,6 +13,9 @@ from src.schemas import (
     PlayerKills,
     PlayerWithPosition,
     RoundAverageLengthResponse,
+    RoundInterval,
+    RoundNumericResponse,
+    RoundWithNumeric,
 )
 
 if TYPE_CHECKING:
@@ -23,7 +26,7 @@ router = APIRouter(prefix="/stats")
 
 @router.get("/avg-round-time")
 def get_average_round_length(
-    interactor: GetInteractor,
+    interactor: GetEventInteractor,
 ) -> DataResponse[RoundAverageLengthResponse]:
     round_start_events = interactor.get_events(
         event_type=EventType.ROUND_START,
@@ -58,7 +61,7 @@ def get_average_round_length(
 
 @router.get("/num-kills-players")
 def get_kills_per_player(
-    interactor: GetInteractor,
+    interactor: GetEventInteractor,
 ) -> DataResponse[KillsPerPlayerResponse]:
     player_kill_events = interactor.get_events(
         event_type=EventType.PLAYER_KILLED_PLAYER,
@@ -82,7 +85,7 @@ def get_kills_per_player(
 
 @router.get("/player-kill-heatmap")
 def get_player_kill_heatmap(
-    interactor: GetInteractor,
+    interactor: GetEventInteractor,
     interval: Annotated[DatetimeInterval, Depends()],
 ) -> DataResponse[PlayerHeatmapResponse]:
     """Return coordinate data of players at the time of death."""
@@ -104,4 +107,31 @@ def get_player_kill_heatmap(
 
     return DataResponse(
         data=PlayerHeatmapResponse(player_with_positions=player_with_positions)
+    )
+
+
+@router.get("/money-spent-per-round")
+def get_money_spent_per_round(
+    interactor: GetEventInteractor,
+    interval: Annotated[RoundInterval, Depends()],
+) -> DataResponse[RoundNumericResponse]:
+    round_to_purchase_map = interactor.get_events_per_rounds(
+        event_type=EventType.PLAYER_PURCHASE,
+        interval=interval,
+    )
+    round_to_total_map = {
+        round_num: sum(event.money_spent for event in events)
+        for round_num, events in round_to_purchase_map.items()
+    }
+
+    round_with_numerics = [
+        RoundWithNumeric(
+            round_num=round_num,
+            numeric=numeric,
+        )
+        for round_num, numeric in round_to_total_map.items()
+    ]
+
+    return DataResponse(
+        data=RoundNumericResponse(round_with_numeric=round_with_numerics)
     )

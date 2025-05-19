@@ -1,3 +1,4 @@
+import itertools
 from pathlib import Path
 from typing import Annotated, Any
 
@@ -5,7 +6,7 @@ from fastapi import Depends
 
 from src.events import BaseEvent, EventType
 from src.parser import EventParser, get_event_parser
-from src.schemas import DatetimeInterval
+from src.schemas import DatetimeInterval, RoundInterval
 
 
 class EventInteractor:
@@ -16,7 +17,7 @@ class EventInteractor:
     ):
         self._parsed_events = event_parser.parse_file(logs_path)
 
-    def _apply_interval(
+    def _apply_datetime_interval(
         self, events: list[BaseEvent], interval: DatetimeInterval
     ) -> list[BaseEvent]:
         return [
@@ -30,14 +31,25 @@ class EventInteractor:
     ) -> list[BaseEvent]:
         if not filter_params:
             return events
+
+        def get_nested_attr(obj: Any, attr_path: str) -> Any:
+            for attr in attr_path.split("."):
+                if not hasattr(obj, attr):
+                    return None
+                obj = getattr(obj, attr)
+            return obj
+
         filtered = []
         for event in events:
-            for k, v in filter_params.items():
-                if not hasattr(event, k):
-                    continue
-                if getattr(event, k) != v:
-                    continue
+            match = True
+            for key, expected_value in filter_params.items():
+                actual_value = get_nested_attr(event, key)
+                if actual_value != expected_value:
+                    match = False
+                    break
+            if match:
                 filtered.append(event)
+
         return filtered
 
     def get_events(
@@ -49,15 +61,55 @@ class EventInteractor:
         if event_type not in self._parsed_events:
             return []
 
-        events = self._parsed_events[event_type]
+        events = self._parsed_events.get(event_type, [])
 
         if interval is not None:
-            events = self._apply_interval(events, interval)
+            events = self._apply_datetime_interval(events, interval)
 
         if filter_params is not None:
             events = self._apply_filters(events, filter_params)
 
         return events
+
+    def get_events_per_rounds(
+        self,
+        event_type: EventType,
+        interval: RoundInterval | None = None,
+        filter_params: dict[str, Any] | None = None,
+    ) -> dict[int, list[BaseEvent]]:
+        round_end_events = self.get_events(event_type=EventType.ROUND_END)
+
+        if not round_end_events:
+            return {}
+
+        first_timestamp = min(
+            event.timestamp
+            for events in self._parsed_events.values()
+            for event in events
+        )
+
+        datetime_intervals: list[DatetimeInterval] = []
+
+        datetime_intervals.append(
+            DatetimeInterval(start=first_timestamp, end=round_end_events[0].timestamp)
+        )
+
+        for prev, curr in itertools.pairwise(round_end_events):
+            datetime_intervals.append(
+                DatetimeInterval(start=prev.timestamp, end=curr.timestamp)
+            )
+
+        extra = 1
+        if interval is not None:
+            datetime_intervals = datetime_intervals[interval.start - 1 : interval.end]
+            extra = interval.start
+
+        events_per_round: dict[int, list[BaseEvent]] = {}
+        for idx, dt_interval in enumerate(datetime_intervals, start=1):
+            filtered_events = self.get_events(event_type, dt_interval, filter_params)
+            events_per_round[idx + extra - 1] = filtered_events
+
+        return events_per_round
 
 
 def get_event_interactor() -> EventInteractor:
@@ -67,4 +119,4 @@ def get_event_interactor() -> EventInteractor:
     )
 
 
-GetInteractor = Annotated[EventInteractor, Depends(get_event_interactor)]
+GetEventInteractor = Annotated[EventInteractor, Depends(get_event_interactor)]
