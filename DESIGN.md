@@ -34,6 +34,7 @@ The following statistics are exposed by the API:
 5. Kills By Weapon (Round Interval, Weapon name Query Params)
 
 ### Event Processing Pipeline
+```mermaid
 flowchart TD
     A[Log File] --> B[EventParser.parse_file]
     B --> C[Line by line processing]
@@ -42,6 +43,7 @@ flowchart TD
     D -->|No| C
     E --> F[Group by EventType]
     F --> G[Return filtered events]
+```
 
 The events package is located in `backend/src/events`, and contains all code related to events. 
 
